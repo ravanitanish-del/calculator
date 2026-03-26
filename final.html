@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KG Calculator</title>
+
+<style>
+
+body{font-family:Arial;background:#f0ebe3;margin:0;}
+
+header{
+background:linear-gradient(135deg,#7c3d0f,#c2410c);
+color:white;
+text-align:center;
+padding:18px;
+}
+
+.logo{
+width:70px;
+margin-bottom:5px;
+}
+
+.container{padding:12px;}
+
+button{
+padding:10px;
+border:none;
+border-radius:8px;
+margin:4px;
+font-weight:bold;
+}
+
+.btn{background:#7c3d0f;color:white;}
+.btn2{background:#25d366;color:white;width:100%;}
+.btn3{background:#eee;}
+
+.box{
+background:white;
+border-radius:12px;
+padding:12px;
+margin-bottom:10px;
+text-align:center;
+}
+
+input{
+padding:8px;
+border-radius:6px;
+border:1px solid #ccc;
+width:100px;
+text-align:center;
+}
+
+table{
+width:100%;
+background:white;
+border-radius:10px;
+overflow:hidden;
+}
+
+th{
+background:#7c3d0f;
+color:white;
+padding:8px;
+}
+
+td{
+text-align:center;
+padding:8px;
+}
+
+.final{
+background:linear-gradient(135deg,#7c3d0f,#c2410c);
+color:white;
+padding:20px;
+border-radius:12px;
+font-size:24px;
+text-align:center;
+}
+
+@media print {
+
+button{display:none;}
+
+body{
+-webkit-print-color-adjust:exact;
+}
+
+}
+.deduction-box{
+background:white;
+border-radius:12px;
+padding:15px;
+margin-top:12px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+.deduction-box h3{
+margin-top:0;
+color:#7c3d0f;
+}
+
+.deduction-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.deduction-box label{
+display:block;
+font-size:13px;
+margin-bottom:3px;
+color:#444;
+}
+
+.deduction-box select,
+.deduction-box input{
+width:100%;
+padding:8px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+@media(max-width:600px){
+
+.deduction-grid{
+grid-template-columns:1fr;
+}
+
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<!-- Logo -->
+<img src="https://image2url.com/r2/default/images/1774455593852-88fc556b-9b37-4a94-8cab-8fa077b60278.jpg" class="logo">
+
+<h2>Jogmaya Farms</h2>
+<p>KG Calculator</p>
+
+</header>
+
+<div class="container">
+
+<button class="btn" onclick="saveData()">💾SaveData</button>
+<button class="btn3" onclick="showHistory()">📋showHistory</button>
+<button class="btn3" onclick="resetAll()">🔄Reset All</button>
+<button class="btn3" onclick="printPage()">🖨️Print</button>
+<button class="btn3" onclick="exportCSV()">📥CSV</button>
+
+
+<!-- Bill -->
+<div class="box">
+
+Bill No : <b id="bill"></b>
+<br><br>
+
+Customer Name  
+<br><br>
+<input type="text" id="customer" placeholder="Customer Name">
+
+</div>
+
+
+<div class="box">
+₹ Rate (per 40 KG)<br><br>
+<input type="number" id="rate" value="" oninput="calc()">
+</div>
+
+<table id="table">
+<tr>
+<th>SR</th>
+<th>KG</th>
+<th>AMOUNT</th>
+<th>DEL</th>
+</tr>
+</table>
+
+<button class="btn" onclick="addRow()">Add Row</button>
+
+<div class="box">Total KG : <b id="totalkg">0</b></div>
+<div class="box">Total Maan : <b id="maan">0</b></div>
+<div class="box">Total Amount : ₹ <b id="amount">0</b></div>
+
+<div class="deduction-box">
+
+<h3>Deduction</h3>
+
+<div class="deduction-grid">
+
+<div>
+<label>Type</label>
+<select id="deductionType" onchange="toggleDeduction();calc()">
+<option value="kg">KG</option>
+<option value="gram">Gram</option>
+<option value="rate">Rate</option>
+</select>
+</div>
+
+<div id="applyBox">
+<label>Apply Rows</label>
+<select id="deductionRowType" onchange="toggleRows();calc()">
+<option value="all">All Rows</option>
+<option value="custom">Custom</option>
+</select>
+</div>
+
+<div>
+<label>Value</label>
+<input type="number" id="deductionValue" placeholder="Enter value" oninput="calc()">
+</div>
+
+<div id="rowBox" style="display:none">
+<label>Rows Count</label>
+<input type="number" id="deductionRow" placeholder="Enter rows" oninput="calc()">
+</div>
+
+</div>
+
+</div>
+<div class="final">
+Final ₹ <span id="final">0</span>
+</div>
+
+<button class="btn2" onclick="share()"><img src="https://img.icons8.com/?size=100&id=uZWiLUyryScN&format=png&color=000000" 
+style="width:22px;height:22px;margin-right:8px;">
+Share on WhatsApp
+</button>
+
+</div>
+
+<script>
+function toggleDeduction(){
+
+let type=document.getElementById("deductionType").value;
+
+if(type=="rate"){
+document.getElementById("applyBox").style.display="block";
+}else{
+document.getElementById("applyBox").style.display="block";
+}
+
+}
+
+function printPage(){
+window.print();
+}
+
+
+// bill auto
+
+document.getElementById("bill").innerHTML =
+"JF" + Date.now().toString().slice(-6);
+
+
+
+function addRow(val=""){
+
+let table = document.getElementById("table");
+let row = table.insertRow();
+let i = table.rows.length - 1;
+
+let cell1 = row.insertCell(0);
+let cell2 = row.insertCell(1);
+let cell3 = row.insertCell(2);
+let cell4 = row.insertCell(3);
+
+cell1.innerHTML = i;
+
+cell2.innerHTML = `<input type="number" value="${val}" 
+oninput="calc()" 
+onkeydown="handleEnter(event)">`;
+
+cell3.innerHTML = "0";
+
+cell4.innerHTML = `<button onclick="delRow(this)">❌</button>`;
+
+}
+
+function handleEnter(e){
+if(e.key === "Enter"){
+addRow("");
+setTimeout(()=>{
+let inputs=document.querySelectorAll("#table input");
+inputs[inputs.length-1].focus();
+},100);
+}
+}
+
+function delRow(btn){
+btn.parentElement.parentElement.remove();
+calc();
+}
+function toggleRows(){
+
+let type=document.getElementById("deductionRowType").value;
+
+if(type=="custom"){
+document.getElementById("rowBox").style.display="block";
+}else{
+document.getElementById("rowBox").style.display="none";
+}
+
+}
+function calc(){
+
+let table = document.getElementById("table");
+let rate = parseFloat(document.getElementById("rate").value)||0;
+
+let totalkg = 0;
+let totalmaan = 0;
+let total = 0;
+
+let deductionType = document.getElementById("deductionType").value;
+let deductionValue = parseFloat(document.getElementById("deductionValue").value)||0;
+
+let deductionRowType = document.getElementById("deductionRowType").value;
+let deductionRow = parseInt(document.getElementById("deductionRow").value)||0;
+
+let rowLimit = table.rows.length-1;
+
+if(deductionRowType=="custom"){
+rowLimit = Math.min(deductionRow,table.rows.length-1);
+}
+
+let deduction = 0;
+
+for(let i=1;i<table.rows.length;i++){
+
+let kg = parseFloat(table.rows[i].cells[1].children[0].value)||0;
+
+if(i<=rowLimit){
+
+if(deductionType=="kg"){
+kg = kg - deductionValue;
+deduction += deductionValue;
+}
+
+else if(deductionType=="gram"){
+kg = kg - (deductionValue/1000);
+deduction += (deductionValue/1000);
+}
+
+}
+
+let maan = kg / 40;
+let amt = maan * rate;
+
+if(deductionType=="rate" && i<=rowLimit){
+amt = amt - deductionValue;
+deduction += deductionValue;
+}
+table.rows[i].cells[2].innerHTML = amt.toFixed(2);
+
+totalkg += kg;
+totalmaan += maan;
+total += amt;
+
+}
+
+
+document.getElementById("totalkg").innerHTML = totalkg.toFixed(2);
+document.getElementById("maan").innerHTML = totalmaan.toFixed(2);
+document.getElementById("amount").innerHTML = total.toFixed(2);
+document.getElementById("final").innerHTML = total.toFixed(2);
+
+}
+function resetAll(){
+
+document.getElementById("table").innerHTML=
+`<tr>
+<th>SR</th>
+<th>KG</th>
+<th>AMOUNT</th>
+<th>DEL</th>
+</tr>`;
+
+addRow("");
+calc();
+
+}
+function saveData(){
+
+let history=JSON.parse(localStorage.getItem("history")||"[]");
+
+history.push({
+date:new Date().toLocaleString(),
+kg:document.getElementById("totalkg").innerText,
+amount:document.getElementById("final").innerText
+});
+
+localStorage.setItem("history",JSON.stringify(history));
+
+alert("Saved");
+
+}
+
+function showHistory(){
+
+let history=JSON.parse(localStorage.getItem("history")||"[]");
+
+if(history.length==0){alert("No history");return;}
+
+let txt="History\n\n";
+
+history.forEach((h,i)=>{
+txt+=(i+1)+". ₹"+h.amount+" | KG:"+h.kg+" | "+h.date+"\n";
+});
+
+alert(txt);
+
+}
+
+function exportCSV(){
+
+let csv="Jogmaya Farms\n";
+csv+="Bill No,Customer,Rate,Total KG,Total Maan,Total Amount,Deduction,Final\n";
+
+csv+=
+document.getElementById("bill").innerText+","
++document.getElementById("customer").value+","
++document.getElementById("rate").value+","
++document.getElementById("totalkg").innerText+","
++document.getElementById("maan").innerText+","
++document.getElementById("amount").innerText+","
++document.getElementById("deduct").innerText+","
++document.getElementById("final").innerText;
+
+let blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+let link=document.createElement("a");
+link.href=URL.createObjectURL(blob);
+link.download="Jogmaya-Farms.csv";
+link.click();
+
+}
+function share(){
+
+let msg="*Jogmaya Farms*\n";
+msg+="-----------------------------\n";
+
+msg+="Bill No : "+document.getElementById("bill").innerText+"\n";
+msg+="Customer : "+document.getElementById("customer").value+"\n\n";
+
+msg+="Rate : ₹"+document.getElementById("rate").value+" per 40 KG\n\n";
+
+msg+="Total KG     : "+document.getElementById("totalkg").innerText+"\n";
+msg+="Total Maan   : "+document.getElementById("maan").innerText+"\n";
+msg+="Total Amount : ₹ "+document.getElementById("amount").innerText+"\n";
+
+msg+="Deduction    : "+document.getElementById("deduct").innerText+"\n\n";
+
+msg+="*TOTAL ₹ "+document.getElementById("final").innerText+"*\n";
+
+msg+="-----------------------------\n";
+
+window.open("https://wa.me/?text="+encodeURIComponent(msg));
+
+}
+
+addRow("");
+calc();
+
+</script>
+
+</body>
+</html>
