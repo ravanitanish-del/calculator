@@ -417,23 +417,21 @@ alert(txt);
 
 function exportCSV(){
 
-let csv="Jogmaya Farms\n";
-csv+="Bill No,Customer,Rate,Total KG,Total Maan,Total Amount,Deduction,Final\n";
+let csv="Jogmaya Farms\n\n";
 
-csv+=
-document.getElementById("bill").innerText+","
-+document.getElementById("customer").value+","
-+document.getElementById("rate").value+","
-+document.getElementById("totalkg").innerText+","
-+document.getElementById("maan").innerText+","
-+document.getElementById("amount").innerText+","
-+document.getElementById("deduct").innerText+","
-+document.getElementById("final").innerText;
+csv+="Bill No : "+document.getElementById("bill").innerText+"\n";
+csv+="Customer : "+document.getElementById("customer").value+"\n";
+csv+="Rate : "+document.getElementById("rate").value+"\n\n";
 
-let blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
-let link=document.createElement("a");
-link.href=URL.createObjectURL(blob);
-link.download="Jogmaya-Farms.csv";
+csv+="Total KG : "+document.getElementById("totalkg").innerText+"\n";
+csv+="Total Maan : "+document.getElementById("maan").innerText+"\n";
+csv+="Total Amount : "+document.getElementById("amount").innerText+"\n";
+csv+="Final : "+document.getElementById("final").innerText+"\n";
+
+let blob = new Blob([csv], {type: "text/plain"});
+let link = document.createElement("a");
+link.href = URL.createObjectURL(blob);
+link.download = "Jogmaya-Farms.txt";
 link.click();
 
 }
