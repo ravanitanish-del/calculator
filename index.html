@@ -452,7 +452,10 @@ msg+="Total KG     : "+document.getElementById("totalkg").innerText+"\n";
 msg+="Total Maan   : "+document.getElementById("maan").innerText+"\n";
 msg+="Total Amount : ₹ "+document.getElementById("amount").innerText+"\n";
 
-msg+="Deduction    : "+document.getElementById("deduct").innerText+"\n\n";
+// deduction value update
+let deductionValue = document.getElementById("deductionValue").value || "0";
+let deductionType = document.getElementById("deductionType").value;
+msg+="Deduction    : "+deductionValue+" ("+deductionType+")\n\n";
 
 msg+="*TOTAL ₹ "+document.getElementById("final").innerText+"*\n";
 
