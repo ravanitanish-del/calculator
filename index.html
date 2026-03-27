@@ -156,7 +156,7 @@ grid-template-columns:1fr;
 <button class="btn3" onclick="showHistory()">📋showHistory</button>
 <button class="btn3" onclick="resetAll()">🔄Reset All</button>
 <button class="btn3" onclick="printPage()">🖨️Print</button>
-<button class="btn3" onclick="exportCSV()">📥CSV</button>
+<button class="btn3" onclick="downloadCSV()">📥CSV</button>
 
 
 <!-- Bill -->
@@ -432,26 +432,48 @@ alert(txt);
 
 }
 
-function exportCSV(){
 
-let csv="Jogmaya Farms\n\n";
+function downloadCSV(){
 
-csv+="Bill No : "+document.getElementById("bill").innerText+"\n";
-csv+="Customer : "+document.getElementById("customer").value+"\n";
-csv+="Rate : "+document.getElementById("rate").value+"\n\n";
+let csv="\uFEFF";
 
-csv+="Total KG : "+document.getElementById("totalkg").innerText+"\n";
-csv+="Total Maan : "+document.getElementById("maan").innerText+"\n";
-csv+="Total Amount : "+document.getElementById("amount").innerText+"\n";
-csv+="Final : "+document.getElementById("final").innerText+"\n";
+csv+="Jogmaya Farms\n";
+csv+="-----------------------------\n";
 
-let blob = new Blob([csv], {type: "text/plain"});
-let link = document.createElement("a");
-link.href = URL.createObjectURL(blob);
-link.download = "Jogmaya-Farms.txt";
+csv+="Bill No,"+document.getElementById("bill").innerText+"\n";
+csv+="Customer,"+document.getElementById("customer").value+"\n";
+csv+="Rate,"+document.getElementById("rate").value+" per 40 KG\n";
+
+csv+="\n";
+
+csv+="Total KG,"+document.getElementById("totalkg").innerText+"\n";
+csv+="Total Maan,"+document.getElementById("maan").innerText+"\n";
+csv+="Total Amount,"+document.getElementById("amount").innerText+"\n";
+
+let deductionValue=document.getElementById("deductionValue").value || "0";
+let deductionType=document.getElementById("deductionType").value;
+
+csv+="Deduction,"+deductionValue+" ("+deductionType+")\n";
+
+csv+="Final Total,"+document.getElementById("final").innerText+"\n";
+
+csv+="\n";
+csv+="-----------------------------\n";
+
+let blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+
+let link=document.createElement("a");
+link.href=URL.createObjectURL(blob);
+
+link.download="Jogmaya_Farms_Bill.csv";
+
+document.body.appendChild(link);
 link.click();
+document.body.removeChild(link);
 
 }
+
+
 function share(){
 
 let msg="*Jogmaya Farms*\n";
