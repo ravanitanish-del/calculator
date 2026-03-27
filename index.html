@@ -3,7 +3,7 @@
 <head>
      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9242403451356012"
      crossorigin="anonymous"></script>
-     
+<meta name="google-adsense-account" content="ca-pub-9242403451356012">     
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KG Calculator</title>
@@ -460,19 +460,19 @@ csv+="Final Total,"+document.getElementById("final").innerText+"\n";
 csv+="\n";
 csv+="-----------------------------\n";
 
-let blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
 
-let link=document.createElement("a");
-link.href=URL.createObjectURL(blob);
+// APK Friendly Download
+let csvData = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
 
-link.download="Jogmaya_Farms_Bill.csv";
+let link = document.createElement("a");
+link.setAttribute("href", csvData);
+link.setAttribute("download", "Jogmaya_Farms_Bill.csv");
 
 document.body.appendChild(link);
 link.click();
 document.body.removeChild(link);
 
 }
-
 
 function share(){
 
