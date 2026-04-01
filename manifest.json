@@ -1,0 +1,11 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Jogmaya Kg Calculator",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Kg Calculator",
+  "start_url": "https://ravanitanish-del.github.io/calculator/",
+  "theme_color": "#ffffff"
+}
