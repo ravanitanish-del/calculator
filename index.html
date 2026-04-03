@@ -267,16 +267,38 @@ document.getElementById("applyBox").style.display="block";
 }
 
 function printPage(){
-window.print();
+
+let printContent = document.querySelector(".container").innerHTML;
+
+let win = window.open('', '', 'height=700,width=900');
+
+win.document.write('<html>');
+win.document.write('<head>');
+win.document.write('<title>Jogmaya Farms Bill</title>');
+
+win.document.write(`
+<style>
+body{font-family:Arial;padding:20px;}
+table{width:100%;border-collapse:collapse;}
+th,td{border:1px solid #ddd;padding:8px;text-align:center;}
+.final{font-size:22px;font-weight:bold;margin-top:20px;}
+</style>
+`);
+
+win.document.write('</head>');
+win.document.write('<body>');
+win.document.write(printContent);
+win.document.write('</body></html>');
+
+win.document.close();
+win.focus();
+
+setTimeout(()=>{
+win.print();
+win.close();
+},500);
+
 }
-
-
-// bill auto
-
-document.getElementById("bill").innerHTML =
-"JF" + Date.now().toString().slice(-6);
-
-
 
 function addRow(val=""){
 
